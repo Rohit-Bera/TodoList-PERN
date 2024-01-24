@@ -20,7 +20,9 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const url = `http://localhost:5800`;
+  // const url = `http://localhost:5800`;
+  const url = `https://todolist-server-n303.onrender.com`;
+
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
@@ -45,12 +47,17 @@ const Login = () => {
       const result = await axios.post(url + "/login", user);
       console.log("result: ", result);
 
-      if (result) {
-        dispatch(storeUser(result.data.rows));
-        navigate("/tasks");
-      } else {
-        alert("Invalid details");
+      if (result.data.message === "user not found!") {
+        alert("invalid details!");
+        setUser({
+          email: "",
+          password: "",
+        });
+        return;
       }
+
+      dispatch(storeUser(result.data.rows));
+      navigate("/tasks");
     } catch (error) {
       console.log("error: ", error);
     }

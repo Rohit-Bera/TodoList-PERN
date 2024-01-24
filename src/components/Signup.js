@@ -12,7 +12,7 @@ const Signup = () => {
     email: "",
     password: "",
   });
-  const url = `http://localhost:5800`;
+  const url = `https://todolist-server-n303.onrender.com`;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,12 +35,14 @@ const Signup = () => {
     try {
       const result = await axios.post(url + "/signup", user);
       console.log("result: ", result);
-      if (result) {
-        dispatch(storeUser(result.data.rows));
-        navigate("/tasks");
-      } else {
-        alert("Invalid details");
+
+      if (result.status === 400) {
+        alert("internal server error");
+        return;
       }
+
+      dispatch(storeUser(result.data.rows));
+      navigate("/tasks");
     } catch (error) {
       console.log("error: ", error);
     }

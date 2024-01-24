@@ -19,7 +19,9 @@ const AddRecord = () => {
     }
   }, []);
 
-  const url = `http://localhost:5800`;
+  // const url = `http://localhost:5800`;
+  const url = `https://todolist-server-n303.onrender.com`;
+
   const [record, setRecord] = useState({
     date: "",
     task: "",

@@ -1,0 +1,48 @@
+body{
+    background-color: #96E9C6;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.container{
+    height: 90vh;
+    width: 90vw;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+.loginform{
+    background-color: white;
+    border-radius: 2rem;
+    height:50vh;
+    width: 25vw;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+table{
+    background-color: whitesmoke;
+    width: 70vw;
+}
+
+.listContainer{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+    min-height: 60vh;
+    height: 70vh;
+    max-height: auto;
+    background-color: whitesmoke;
+    border-radius: 2rem;
+    margin-top: 5rem;
+}
+.task{
+    width: 30vw;
+}

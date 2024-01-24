@@ -39,8 +39,16 @@ const Login = () => {
   const handleLogin = async () => {
     console.log("user: ", user);
 
+    const validateEmail = user.email
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+
     if (user.email === "" || user.password === "") {
       return alert("please fill all details"); // toaster
+    } else if (!validateEmail) {
+      return alert("please enter a valid email!");
     }
 
     try {

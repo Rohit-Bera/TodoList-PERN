@@ -144,7 +144,7 @@ const Form = ({ title }) => {
             height={50}
             width={50}
             radius={5}
-            color="black"
+            color="white"
             ariaLabel="ball-triangle-loading"
             wrapperStyle={{}}
             wrapperClass=""

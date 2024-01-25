@@ -4,12 +4,29 @@ import ShowRecord from "../components/ShowRecord";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { allTask } from "../store/lib/tasks.reducer";
+import { BallTriangle } from "react-loader-spinner";
+
+const Loader = () => {
+  return (
+    <BallTriangle
+      height={20}
+      width={20}
+      radius={5}
+      color="white"
+      ariaLabel="ball-triangle-loading"
+      visible={true}
+    />
+  );
+};
 
 const AddRecord = () => {
   const user = useSelector((state) => state.userReducer).username;
   const email = useSelector((state) => state.userReducer).email;
   const pass = useSelector((state) => state.userReducer).password;
   const user_id = useSelector((state) => state.userReducer).id;
+
+  const [addLoading, setaddLoading] = useState(false);
+  const [editLoading, seteditLoading] = useState(false);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -50,6 +67,7 @@ const AddRecord = () => {
       return alert("please fill all details");
 
     try {
+      setaddLoading(!addLoading);
       const response = await axios.post(url + `/postList/${user_id}`, record);
       console.log("response: ", response);
 
@@ -59,6 +77,7 @@ const AddRecord = () => {
         task: "",
       });
       getRecords();
+      setaddLoading(false);
     } catch (err) {
       console.log("err: ", err);
     }
@@ -71,11 +90,13 @@ const AddRecord = () => {
       return alert("please fill all details");
 
     try {
+      seteditLoading(!editLoading);
       const response = await axios.put(url + `/putList/${id}`, record);
 
       response && alert("record updated successfull!");
 
       if (response.status === 200) {
+        seteditLoading(false);
         setRecord({
           date: "",
           task: "",
@@ -163,13 +184,13 @@ const AddRecord = () => {
             onClick={handleSubmit}
             className="rounded-sm p-1 m-1 bg-black text-white  px-3"
           >
-            submit
+            {addLoading ? <Loader /> : <h4>add</h4>}
           </button>
           <button
             onClick={handleUpdate}
             className="rounded-sm p-1 m-1 bg-black text-white  px-3"
           >
-            update
+            {editLoading ? <Loader /> : <h4>update</h4>}
           </button>
         </form>
         <ShowRecord

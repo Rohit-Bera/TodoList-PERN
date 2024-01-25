@@ -21,7 +21,7 @@ const ShowRecord = (props) => {
         <tbody className="border border-1 rounded-sm border-black">
           {records.map((item, id) => {
             return (
-              <tr key={id}>
+              <tr key={id} className="border border-black">
                 <td>{id}</td>
                 <td>{item?.date}</td>
                 <td>{item?.task}</td>

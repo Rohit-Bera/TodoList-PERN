@@ -10,15 +10,15 @@ const ShowRecord = (props) => {
 
   return (
     <>
-      <table border="1">
-        <thead>
+      <table className="w-full">
+        <thead className="border border-20 rounded-sm border-black bg-black text-white">
           <td>id</td>
           <td>date</td>
           <td>task</td>
           <td>Edit btn</td>
           <td>Delete btn</td>
         </thead>
-        <tbody>
+        <tbody className="border border-1 rounded-sm border-black">
           {records.map((item, id) => {
             return (
               <tr key={id}>
@@ -26,10 +26,20 @@ const ShowRecord = (props) => {
                 <td>{item?.date}</td>
                 <td>{item?.task}</td>
                 <td>
-                  <button onClick={() => editData(item)}>Edit</button>
+                  <button
+                    onClick={() => editData(item)}
+                    className="rounded-sm p-1 m-1 bg-black text-white px-3"
+                  >
+                    Edit
+                  </button>
                 </td>
                 <td>
-                  <button onClick={() => deleteData(item?.id)}>Delete</button>
+                  <button
+                    onClick={() => deleteData(item?.id)}
+                    className="rounded-sm p-1 m-1 bg-black text-white"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             );

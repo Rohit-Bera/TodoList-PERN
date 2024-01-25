@@ -15,7 +15,7 @@ body{
 }
 
 .loginform{
-    background-color: white;
+    background-color: whitesmoke;
     border-radius: 2rem;
     height:50vh;
     width: 25vw;
@@ -23,6 +23,7 @@ body{
     justify-content: space-around;
     align-items: center;
     flex-direction: column;
+    border: 2px solid black;
 }
 
 table{
@@ -42,6 +43,7 @@ table{
     background-color: whitesmoke;
     border-radius: 2rem;
     margin-top: 5rem;
+    border: 2px solid black;
 }
 .task{
     width: 30vw;

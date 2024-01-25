@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ShowRecord from "./ShowRecord";
+import ShowRecord from "../components/ShowRecord";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { allTask } from "../store/lib/tasks.reducer";
@@ -137,26 +137,40 @@ const AddRecord = () => {
 
   return (
     <>
-      <div className="listContainer">
-        <form onSubmit={rejectRefresh}>
-          <h3>Hello {user}!</h3>
-          <h2>ToDo List</h2>
+      <div className="listContainer w-[80vw] sm:w-[80vw]">
+        <h3>Hello {user}!</h3>
+        <h2 className="font-sans font-bold">What you will be doing today?</h2>
+        <form
+          onSubmit={rejectRefresh}
+          className="flex justify-center items-center flex-wrap"
+        >
           <input
             type="date"
             name="date"
             value={record.date}
             onChange={handleInput}
+            className="rounded-sm border border-r-5 border-black p-1 m-1"
           />
           <input
             type="text"
             name="task"
             value={record.task}
             onChange={handleInput}
-            className="task"
+            className="rounded-sm border border-r-5 border-black p-1 m-1 w-[60vw]"
           />
 
-          <button onClick={handleSubmit}>submit</button>
-          <button onClick={handleUpdate}>update</button>
+          <button
+            onClick={handleSubmit}
+            className="rounded-sm p-1 m-1 bg-black text-white  px-3"
+          >
+            submit
+          </button>
+          <button
+            onClick={handleUpdate}
+            className="rounded-sm p-1 m-1 bg-black text-white  px-3"
+          >
+            update
+          </button>
         </form>
         <ShowRecord
           editData={editData}

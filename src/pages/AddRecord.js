@@ -4,20 +4,17 @@ import ShowRecord from "../components/ShowRecord";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { allTask } from "../store/lib/tasks.reducer";
-import { BallTriangle } from "react-loader-spinner";
-
-const Loader = () => {
-  return (
-    <BallTriangle
-      height={20}
-      width={20}
-      radius={5}
-      color="white"
-      ariaLabel="ball-triangle-loading"
-      visible={true}
-    />
-  );
-};
+import {
+  addTask,
+  deleteTask,
+  getTask,
+  updateTask,
+} from "../services/task.service";
+import Loader from "../components/Loader";
+import { handleSubmit } from "../services/user.service";
+import Input from "../components/Input";
+import Button from "../components/Button";
+import Title from "../components/Title";
 
 const AddRecord = () => {
   const user = useSelector((state) => state.userReducer).username;
@@ -25,6 +22,9 @@ const AddRecord = () => {
   const pass = useSelector((state) => state.userReducer).password;
   const user_id = useSelector((state) => state.userReducer).id;
 
+  const rows = useSelector((state) => state.tasksReducer).tasks;
+
+  const [isLoading, setLoading] = useState(false);
   const [addLoading, setaddLoading] = useState(false);
   const [editLoading, seteditLoading] = useState(false);
 
@@ -37,7 +37,6 @@ const AddRecord = () => {
   }, []);
 
   // const url = `http://localhost:5800`;
-  const url = `https://todolist-server-n303.onrender.com`;
 
   const [record, setRecord] = useState({
     date: "",
@@ -60,59 +59,6 @@ const AddRecord = () => {
     setRecord({ ...record, [name]: value });
   };
 
-  const handleSubmit = async () => {
-    console.log("record: ", record);
-
-    if (record.date === "" || record.task === "")
-      return alert("please fill all details");
-
-    try {
-      setaddLoading(!addLoading);
-      const response = await axios.post(url + `/postList/${user_id}`, record);
-      console.log("response: ", response);
-
-      response.status === 200 && alert("record added successfull");
-      setRecord({
-        date: "",
-        task: "",
-      });
-      getRecords();
-      setaddLoading(false);
-    } catch (err) {
-      console.log("err: ", err);
-    }
-  };
-
-  const handleUpdate = async () => {
-    console.log("record: ", record);
-    console.log("id: ", id);
-    if (record.date === "" || record.task === "")
-      return alert("please fill all details");
-
-    try {
-      seteditLoading(!editLoading);
-      const response = await axios.put(url + `/putList/${id}`, record);
-
-      response && alert("record updated successfull!");
-
-      if (response.status === 200) {
-        seteditLoading(false);
-        setRecord({
-          date: "",
-          task: "",
-        });
-        setId("");
-        getRecords();
-      }
-    } catch (error) {
-      console.log("error: ", error);
-    }
-  };
-
-  const rejectRefresh = (e) => {
-    e.preventDefault();
-  };
-
   const editData = (item) => {
     console.log("item: ", item);
 
@@ -125,79 +71,119 @@ const AddRecord = () => {
     setId(item.id);
   };
 
-  const getRecords = () => {
-    try {
-      fetch(url + `/getList/${user_id}`)
-        .then((res) => {
-          res.json().then((data) => {
-            console.log("data :", data);
-            setRecords(data?.rows);
-            const rows = data?.rows;
-            dispatch(allTask(rows));
-          });
-        })
-        .catch((err) => {
-          console.log("err: ", err);
-        });
-    } catch (err) {
-      console.log("err: ", err);
+  const handleAdd = async () => {
+    setaddLoading(true);
+    const response = await addTask({ record, user_id });
+
+    if (response) {
+      setaddLoading(false);
+      getRecords();
+    }
+    setRecord({
+      date: "",
+      task: "",
+    });
+    setaddLoading(false);
+  };
+
+  const handleUpdate = async () => {
+    // console.log("record: ", record);
+    // console.log("id: ", id);
+    seteditLoading(true);
+    const response = await updateTask({ record, id });
+
+    seteditLoading(false);
+    setRecord({
+      date: "",
+      task: "",
+    });
+    setId("");
+    getRecords();
+    seteditLoading(false);
+  };
+
+  const getRecords = async () => {
+    setLoading(true);
+    const response = await getTask({ user_id });
+
+    if (response.error) {
+      setRecords(rows);
+      setLoading(false);
+      return;
+    } else {
+      dispatch(allTask(response.rows));
+      setRecords(response.rows);
+
+      setLoading(false);
+      return;
     }
   };
 
   const deleteData = async (id) => {
-    try {
-      const response = await axios.delete(url + `/deleteList/${id}`);
+    const result = await deleteTask({ id });
 
-      response && alert("record deleted successfull!");
-
-      getRecords();
-    } catch (err) {
-      console.log("err: ", err);
-    }
+    getRecords();
   };
+
+  const commonStyle = "flex justify-around items-center";
 
   return (
     <>
-      <div className="listContainer w-[80vw] sm:w-[80vw]">
-        <h3>Hello {user}!</h3>
-        <h2 className="font-sans font-bold">What you will be doing today?</h2>
-        <form
-          onSubmit={rejectRefresh}
-          className="flex justify-center items-center flex-wrap"
+      <div
+        className={`min-h-screen overflow-hidden ${commonStyle} w-[100%] flex-wrap flex-col`}
+      >
+        <div
+          className={`${commonStyle} bg-casual w-[70vw] h-[11vh] mt-10 flex-wrap text-white rounded-xl
+          border-r-primary border-b-primary border-r-8 border-b-8`}
         >
-          <input
-            type="date"
-            name="date"
-            value={record.date}
-            onChange={handleInput}
-            className="rounded-sm border border-r-5 border-black p-1 m-1"
-          />
-          <input
-            type="text"
-            name="task"
-            value={record.task}
-            onChange={handleInput}
-            className="rounded-sm border border-r-5 border-black p-1 m-1 w-[60vw]"
-          />
+          <span> Hello {user} </span>
+          <span> What are your today's updates ?</span>
+        </div>
 
-          <button
-            onClick={handleSubmit}
-            className="rounded-sm p-1 m-1 bg-black text-white  px-3"
-          >
-            {addLoading ? <Loader /> : <h4>add</h4>}
-          </button>
-          <button
-            onClick={handleUpdate}
-            className="rounded-sm p-1 m-1 bg-black text-white  px-3"
-          >
-            {editLoading ? <Loader /> : <h4>update</h4>}
-          </button>
-        </form>
-        <ShowRecord
-          editData={editData}
-          records={records}
-          deleteData={deleteData}
-        />
+        <div
+          className={`bg-primary w-[70vw] min-h-[70vh] mt-8 overflow-hidden p-1 rounded-xl flex-col 
+          border-r-black border-b-black border-r-8 border-b-8`}
+        >
+          <form onSubmit={handleSubmit} className={`flex-wrap`}>
+            <Input
+              type="date"
+              name="date"
+              value={record.date}
+              handleInput={handleInput}
+            />
+            <Input
+              type="text"
+              name="task"
+              value={record.task}
+              handleInput={handleInput}
+              className="w-[50vw]"
+              placeholder="your today's task"
+            />
+
+            {addLoading ? (
+              <Loader />
+            ) : (
+              <Button title="+" clickAction={handleAdd} />
+            )}
+
+            {editLoading ? (
+              <Loader />
+            ) : (
+              <Button title="update" clickAction={handleUpdate} />
+            )}
+          </form>
+          {isLoading ? (
+            <div className={`w-full h-full ${commonStyle}`}>
+              <Loader />
+            </div>
+          ) : (
+            <ShowRecord
+              editData={editData}
+              records={records}
+              deleteData={deleteData}
+            />
+          )}
+        </div>
       </div>
     </>
   );

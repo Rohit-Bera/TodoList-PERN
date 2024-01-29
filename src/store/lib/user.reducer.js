@@ -10,7 +10,7 @@ const userSlice = createSlice({
   },
   reducers: {
     storeUser: (state, action) => {
-      console.log("action: ", action);
+      // console.log("action: ", action);
       const { id, username, email, password } = action.payload;
 
       state.id = id;

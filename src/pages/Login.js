@@ -40,6 +40,8 @@ const Login = () => {
     setLoading(true);
     const response = await loginService(user);
 
+    response && setLoading(false);
+
     const { rows } = response;
 
     setUser({
@@ -49,7 +51,6 @@ const Login = () => {
     if (rows) {
       dispatch(storeUser(rows));
       navigate("/tasks");
-      setLoading(false);
     }
   };
 

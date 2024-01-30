@@ -14,7 +14,6 @@ import Loader from "../components/Loader";
 import { handleSubmit } from "../services/user.service";
 import Input from "../components/Input";
 import Button from "../components/Button";
-import Title from "../components/Title";
 
 const AddRecord = () => {
   const user = useSelector((state) => state.userReducer).username;
@@ -22,11 +21,10 @@ const AddRecord = () => {
   const pass = useSelector((state) => state.userReducer).password;
   const user_id = useSelector((state) => state.userReducer).id;
 
-  const rows = useSelector((state) => state.tasksReducer).tasks;
+  const isLoading = useSelector((state) => state.tasksReducer).loading;
 
-  const [isLoading, setLoading] = useState(false);
-  const [addLoading, setaddLoading] = useState(false);
-  const [editLoading, seteditLoading] = useState(false);
+  const records = useSelector((state) => state.tasksReducer).tasks;
+  console.log("records: ", records);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -36,6 +34,9 @@ const AddRecord = () => {
     }
   }, []);
 
+  useEffect(() => {
+    getRecords();
+  }, []);
   // const url = `http://localhost:5800`;
 
   const [record, setRecord] = useState({
@@ -43,14 +44,13 @@ const AddRecord = () => {
     task: "",
   });
 
-  const [records, setRecords] = useState([]);
   const [id, setId] = useState("");
 
-  useEffect(() => {
-    getRecords();
-  }, []);
-
   const dispatch = useDispatch();
+
+  const getRecords = () => {
+    dispatch(getTask({ user_id }));
+  };
 
   const handleInput = (e) => {
     const name = e.target.name;
@@ -72,57 +72,31 @@ const AddRecord = () => {
   };
 
   const handleAdd = async () => {
-    setaddLoading(true);
-    const response = await addTask({ record, user_id });
+    if (record.date === "" || record.task === "")
+      return alert("please fill all details");
 
-    if (response) {
-      setaddLoading(false);
-      getRecords();
-    }
+    dispatch(addTask({ record, user_id }));
     setRecord({
       date: "",
       task: "",
     });
-    setaddLoading(false);
   };
 
   const handleUpdate = async () => {
-    // console.log("record: ", record);
-    // console.log("id: ", id);
-    seteditLoading(true);
-    const response = await updateTask({ record, id });
+    if (record.date === "" || record.task === "")
+      return alert("please fill all details");
 
-    seteditLoading(false);
+    dispatch(updateTask({ record, id }));
     setRecord({
       date: "",
       task: "",
     });
     setId("");
-    getRecords();
-    seteditLoading(false);
-  };
-
-  const getRecords = async () => {
-    setLoading(true);
-    const response = await getTask({ user_id });
-
-    if (response.error) {
-      setRecords(rows);
-      setLoading(false);
-      return;
-    } else {
-      dispatch(allTask(response.rows));
-      setRecords(response.rows);
-
-      setLoading(false);
-      return;
-    }
   };
 
   const deleteData = async (id) => {
-    const result = await deleteTask({ id });
-
-    getRecords();
+    dispatch(deleteTask({ id }));
+    setId("");
   };
 
   const commonStyle = "flex justify-around items-center";
@@ -160,17 +134,9 @@ const AddRecord = () => {
               placeholder="your today's task"
             />
 
-            {addLoading ? (
-              <Loader />
-            ) : (
-              <Button title="+" clickAction={handleAdd} />
-            )}
+            <Button title="+" clickAction={handleAdd} />
 
-            {editLoading ? (
-              <Loader />
-            ) : (
-              <Button title="update" clickAction={handleUpdate} />
-            )}
+            <Button title="update" clickAction={handleUpdate} />
           </form>
           {isLoading ? (
             <div className={`w-full h-full ${commonStyle}`}>

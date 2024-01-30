@@ -8,7 +8,7 @@ const ShowRecord = (props) => {
 
   const deleteData = props.deleteData;
 
-  const records = props.records === undefined ? [] : props.records;
+  const records = props.records;
 
   return (
     <>
@@ -19,31 +19,32 @@ const ShowRecord = (props) => {
           <Span child="task" className=" w-[50vw] p-2 uppercase" />
         </div>
         <div className="border border-1 rounded-sm">
-          {records.map((item, id) => {
-            return (
-              <section
-                key={id}
-                className="border-black bg-secondary flex justify-evenly items-center mt-3 mb-2 p-2 rounded-lg
+          {records &&
+            records.map((item, id) => {
+              return (
+                <section
+                  key={id}
+                  className="border-black bg-secondary flex justify-evenly items-center mt-3 mb-2 p-2 rounded-lg
                 border-r-black border-b-black border-r-8 border-b-8"
-              >
-                {/* <td>{id}</td> */}
-                <Span child={item?.date} className="w-[10vw] p-2" />
-                <Span child={item?.task} className="w-[45vw] p-2" />
-                <div className="">
-                  <Button
-                    title="Edit"
-                    clickAction={() => editData(item)}
-                    className="rounded-sm p-1 m-1 bg-black text-white px-3"
-                  />
-                  <Button
-                    title="Delete"
-                    clickAction={() => deleteData(item?.id)}
-                    className="rounded-sm p-1 m-1 bg-black text-white"
-                  />
-                </div>
-              </section>
-            );
-          })}
+                >
+                  {/* <td>{id}</td> */}
+                  <Span child={item?.date} className="w-[10vw] p-2" />
+                  <Span child={item?.task} className="w-[45vw] p-2" />
+                  <div className="">
+                    <Button
+                      title="Edit"
+                      clickAction={() => editData(item)}
+                      className="rounded-sm p-1 m-1 bg-black text-white px-3"
+                    />
+                    <Button
+                      title="Delete"
+                      clickAction={() => deleteData(item?.id)}
+                      className="rounded-sm p-1 m-1 bg-black text-white"
+                    />
+                  </div>
+                </section>
+              );
+            })}
         </div>
       </div>
     </>

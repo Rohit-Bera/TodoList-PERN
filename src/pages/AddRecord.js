@@ -72,6 +72,7 @@ const AddRecord = () => {
   };
 
   const handleAdd = async () => {
+    console.log("record: ", record);
     setaddLoading(true);
     const response = await addTask({ record, user_id });
 

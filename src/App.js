@@ -5,6 +5,7 @@ import AddRecord from "./pages/AddRecord";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Error404 from "./pages/Error404";
+import History from "./pages/History";
 
 const Router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const Router = createBrowserRouter([
   {
     path: "/tasks",
     element: <AddRecord />,
+  },
+  {
+    path: "/history",
+    element: <History />,
   },
   {
     path: "*",

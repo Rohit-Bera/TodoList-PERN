@@ -16,11 +16,38 @@ export const getTask = createAsyncThunk("getTask", async ({ user_id }) => {
   }
 });
 
+export const getHistory = async ({ user_id, limit, offset, date = "" }) => {
+  try {
+    const url = "http://localhost:5800";
+
+    if (date !== "") {
+      const response = await axios.get(
+        url +
+          `/getHistory?id=${user_id}&limit=${limit}&offset=${offset}&date=${date}`
+      );
+
+      const rows = response.data?.rows;
+
+      return { rows };
+    } else {
+      const response = await axios.get(
+        url + `/getHistory?id=${user_id}&limit=${limit}&offset=${offset}`
+      );
+      const rows = response.data?.rows;
+
+      return { rows };
+    }
+  } catch (err) {
+    console.log("err: ", err);
+
+    alert("Network error");
+    return { error: err };
+  }
+};
+
 export const addTask = createAsyncThunk(
   "addTask",
   async ({ record, user_id }) => {
-    // console.log("record: ", record);
-
     try {
       const response = await axios.post(url + `/postList/${user_id}`, record);
       console.log("response: ", response);

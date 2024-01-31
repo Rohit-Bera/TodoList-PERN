@@ -30,7 +30,8 @@ export const loginService = async (user) => {
     console.log("result: ", result);
 
     if (result.data.message === "user not found!") {
-      return alert("invalid details!");
+      alert("invalid details!");
+      return { error: result.data.message };
     }
 
     const rows = result.data.rows;

@@ -41,11 +41,12 @@ const Signup = () => {
     setLoading(!isLoading);
     const response = await signUpServcie(user);
 
+    response && setLoading(false);
+
     const { rows } = response;
     if (rows) {
       dispatch(storeUser(rows));
       navigate("/tasks");
-      setLoading(!isLoading);
     }
   };
 

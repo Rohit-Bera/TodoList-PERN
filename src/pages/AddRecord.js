@@ -112,6 +112,13 @@ const AddRecord = () => {
         >
           <span> Hello {user} </span>
           <span> What are your today's updates ?</span>
+          <Button
+            title="history"
+            className="bg-black border-2 border-white"
+            clickAction={() =>
+              navigate(`/history?user=${user_id}&page=1&l=8&off=0`)
+            }
+          />
         </div>
 
         <div

@@ -1,40 +1,42 @@
 // react paginate implementtaion
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import ReactPaginate from "react-paginate";
 import Pagination from "../components/Pagination";
 import Search from "../components/Search";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import HistoryRecords from "../components/HistoryRecords";
 import { getHistory } from "../services/task.service";
+import { useSearchParams } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const History = () => {
+  const dispatch = useDispatch();
   const rows = [2, 4, 8, 10, 15, 20, 30];
-  const [limit, setLimit] = useState(8);
   const [date, setDate] = useState("");
-  const [offset, setOffset] = useState(0);
-  const [records, setRecords] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const limit = searchParams.get("l");
+  const offset = searchParams.get("off");
+  const page = searchParams.get("page");
+  const [pgLimit, setPgLimit] = useState(0);
+  const records = useSelector((state) => state.tasksReducer).history;
+  const loading = useSelector((state) => state.tasksReducer).loading;
+  const user_id = useSelector((state) => state.userReducer).id;
+  const total = useSelector((state) => state.tasksReducer).total;
 
   useEffect(() => {
     getRecords();
-  }, [limit]);
-
-  // const records = useSelector((state) => state.tasksReducer).tasks;
+    setPgLimit(Math.ceil(total / limit));
+  }, [limit, offset, page, total]);
 
   const getRecords = async () => {
     console.log("limit: ", limit);
-    const user_id = 1;
 
-    const response = await getHistory({ user_id, limit, offset, date });
-    console.log("response: ", response);
-
-    setRecords(response.rows);
+    dispatch(getHistory({ user_id, limit, offset, date }));
   };
 
   return (
     <>
       <section
-        className={`items-center lg:flex h-screen w-[90vw] font-poppins ${
+        className={`items-center lg:flex h-screen w-full font-poppins ${
           limit >= 15 ? "mt-16" : ""
         } `}
       >
@@ -47,10 +49,12 @@ const History = () => {
 
               <Search
                 rows={rows}
-                setLimit={setLimit}
                 setDate={setDate}
                 handleGo={getRecords}
                 limit={limit}
+                offset={offset}
+                page={page}
+                setSearchParams={setSearchParams}
               />
 
               <table className="w-full table-auto">
@@ -68,8 +72,15 @@ const History = () => {
                   <HistoryRecords currentItems={records} />
                 </tbody>
               </table>
-              {/* pagination */}
-              <Pagination />
+
+              <Pagination
+                total={total}
+                limit={limit}
+                offset={offset}
+                page={page}
+                setSearchParams={setSearchParams}
+                pgLimit={pgLimit}
+              />
             </div>
           </div>
         </div>

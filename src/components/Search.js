@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Search = ({
@@ -11,10 +12,11 @@ const Search = ({
   page,
 }) => {
   const navigate = useNavigate();
+  const user_id = useSelector((state) => state.userReducer).id;
 
   const setLimit = (val) => {
     setSearchParams({ l: limit, off: offset, page: page });
-    navigate(`/history?page=${page}&l=${val}&off=${offset}`);
+    navigate(`/history?user=${user_id}&page=${page}&l=${val}&off=${offset}`);
   };
 
   return (

@@ -115,7 +115,9 @@ const AddRecord = () => {
           <Button
             title="history"
             className="bg-black border-2 border-white"
-            clickAction={() => navigate("/history?page=1&l=8&off=0")}
+            clickAction={() =>
+              navigate(`/history?user=${user_id}&page=1&l=8&off=0`)
+            }
           />
         </div>
 

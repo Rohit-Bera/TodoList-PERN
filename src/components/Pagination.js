@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Pagination = ({ total, limit, offset, setSearchParams, pgLimit }) => {
@@ -6,10 +7,13 @@ const Pagination = ({ total, limit, offset, setSearchParams, pgLimit }) => {
   const [currPg, setPages] = useState(1);
   const [calOff, setOffset] = useState(0);
   const navigate = useNavigate();
+  const user_id = useSelector((state) => state.userReducer).id;
 
   useEffect(() => {
     setSearchParams({ l: limit, off: calOff, page: currPg });
-    navigate(`/history?page=${currPg}&l=${limit}&off=${calOff}`);
+    navigate(
+      `/history?user=${user_id}&page=${currPg}&l=${limit}&off=${calOff}`
+    );
   }, [currPg, limit, calOff]);
 
   const onPageChange = (title = "") => {

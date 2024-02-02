@@ -1,7 +1,5 @@
 // react paginate implementtaion
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import ReactPaginate from "react-paginate";
 import Pagination from "../components/Pagination";
 import Search from "../components/Search";
 import { useSelector } from "react-redux";

@@ -7,17 +7,23 @@ import Search from "../components/Search";
 import { useSelector } from "react-redux";
 import HistoryRecords from "../components/HistoryRecords";
 import { getHistory } from "../services/task.service";
+import { useSearchParams } from "react-router-dom";
 
 const History = () => {
   const rows = [2, 4, 8, 10, 15, 20, 30];
-  const [limit, setLimit] = useState(8);
   const [date, setDate] = useState("");
-  const [offset, setOffset] = useState(0);
   const [records, setRecords] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const limit = searchParams.get("l");
+  const offset = searchParams.get("off");
+  const page = searchParams.get("page");
+  const [pgLimit, setPgLimit] = useState(0);
 
   useEffect(() => {
     getRecords();
-  }, [limit]);
+    setPgLimit(Math.ceil(total / limit));
+  }, [limit, offset, page, total]);
 
   // const records = useSelector((state) => state.tasksReducer).tasks;
 
@@ -25,10 +31,10 @@ const History = () => {
     console.log("limit: ", limit);
     const user_id = 1;
 
-    const response = await getHistory({ user_id, limit, offset, date });
-    console.log("response: ", response);
+    const { rows } = await getHistory({ user_id, limit, offset, date });
 
-    setRecords(response.rows);
+    setRecords(rows.records);
+    setTotal(rows.rowCount);
   };
 
   return (
@@ -47,10 +53,12 @@ const History = () => {
 
               <Search
                 rows={rows}
-                setLimit={setLimit}
                 setDate={setDate}
                 handleGo={getRecords}
                 limit={limit}
+                offset={offset}
+                page={page}
+                setSearchParams={setSearchParams}
               />
 
               <table className="w-full table-auto">
@@ -69,7 +77,15 @@ const History = () => {
                 </tbody>
               </table>
               {/* pagination */}
-              <Pagination itemsPerPage={limit} items={records} />
+
+              <Pagination
+                total={total}
+                limit={limit}
+                offset={offset}
+                page={page}
+                setSearchParams={setSearchParams}
+                pgLimit={pgLimit}
+              />
             </div>
           </div>
         </div>

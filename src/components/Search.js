@@ -1,6 +1,22 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const Search = ({ limit, rows, setLimit, setDate, handleGo }) => {
+const Search = ({
+  limit,
+  rows,
+  setDate,
+  handleGo,
+  offset,
+  setSearchParams,
+  page,
+}) => {
+  const navigate = useNavigate();
+
+  const setLimit = (val) => {
+    setSearchParams({ l: limit, off: offset, page: page });
+    navigate(`/history?page=${page}&l=${val}&off=${offset}`);
+  };
+
   return (
     <>
       <div className="flex flex-wrap items-center justify-between px-4 py-2 border-b">

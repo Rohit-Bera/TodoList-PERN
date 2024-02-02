@@ -69,7 +69,7 @@ const History = () => {
                 </tbody>
               </table>
               {/* pagination */}
-              <Pagination />
+              <Pagination itemsPerPage={limit} items={records} />
             </div>
           </div>
         </div>

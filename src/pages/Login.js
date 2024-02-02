@@ -66,7 +66,7 @@ const Login = () => {
           "
         >
           <Input
-            type="text"
+            type="email"
             name="email"
             placeholder="email"
             value={user.email}

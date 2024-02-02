@@ -16,6 +16,7 @@ const Input = ({
       value={value}
       className={`${className} border-2 border-r-5 border-black p-1 m-1 rounded-md`}
       onChange={handleInput}
+      required
     />
   );
 };

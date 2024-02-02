@@ -9,6 +9,7 @@ import Button from "../components/Button";
 import { storeUser } from "../store/lib/user.reducer";
 import Loader from "../components/Loader";
 import Title from "../components/Title";
+import { validations } from "../utils/helper";
 
 const Login = () => {
   const email = useSelector((state) => state.userReducer).email;
@@ -37,9 +38,10 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
-    if (user.email === "" || user.username === "" || user.password === "") {
-      alert("please fill all details"); // toaster
+    const checkDetails = validations(user);
 
+    if (checkDetails) {
+      alert(`${checkDetails.error}`);
       return;
     }
 

@@ -7,6 +7,7 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import Title from "../components/Title";
 import Loader from "../components/Loader";
+import { validations } from "../utils/helper";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -36,12 +37,12 @@ const Signup = () => {
   };
 
   const handleSignup = async () => {
-    if (user.email === "" || user.username === "" || user.password === "") {
-      alert("please fill all details"); // toaster
+    const checkDetails = validations(user);
 
+    if (checkDetails) {
+      alert(`${checkDetails.error}`);
       return;
     }
-
     setLoading(!isLoading);
     const response = await signUpServcie(user);
 

@@ -1,23 +1,37 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import ReactPaginate from "react-paginate";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-const Pagination = ({ itemsPerPage, items }) => {
-  const [itemOffset, setItemOffset] = useState(0);
+const Pagination = ({ total, limit, offset, setSearchParams, pgLimit }) => {
+  console.log("total: ", total);
+  const [currPg, setPages] = useState(1);
+  const [calOff, setOffset] = useState(0);
+  const navigate = useNavigate();
+  const user_id = useSelector((state) => state.userReducer).id;
 
-  //   const endOffset = itemOffset + itemsPerPage;
-  //   console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-  //   const currentItems = items.slice(itemOffset, endOffset);
-  //   const pageCount = Math.ceil(items.length / itemsPerPage);
+  useEffect(() => {
+    setSearchParams({ l: limit, off: calOff, page: currPg });
+    navigate(
+      `/history?user=${user_id}&page=${currPg}&l=${limit}&off=${calOff}`
+    );
+  }, [currPg, limit, calOff]);
 
-  // Invoke when user click to request another page.
-  //   const handlePageClick = (event) => {
-  //     const newOffset = (event.selected * itemsPerPage) % items.length;
-  //     console.log(
-  //       `User requested page number ${event.selected}, which is offset ${newOffset}`
-  //     );
-  //     setItemOffset(newOffset);
-  //   };
+  const onPageChange = (title = "") => {
+    console.log("title: ", title);
+    console.log("currPg: ", currPg);
+
+    if (title === "previous") {
+      if (currPg > 1) {
+        setPages(currPg - 1);
+        setOffset(Math.abs(Number(limit) - Number(offset)));
+      }
+    } else {
+      if (currPg < pgLimit) {
+        setPages(currPg + 1);
+        setOffset(Number(limit) + Number(offset));
+      }
+    }
+  };
 
   return (
     <>
@@ -26,45 +40,35 @@ const Pagination = ({ itemsPerPage, items }) => {
         <p className="mb-4 text-xs lg:mb-0 ">Showing 1 to 10 of 13 entries</p>
         <nav aria-label="page-navigation ">
           <ul className="flex mb-4 list-style-none lg:mb-0">
-            <li className="page-item disabled ">
-              <a
-                href="#"
-                className="relative block px-3 py-1 mr-1 text-xs text-gray-700 transition-all duration-300 rounded-md pointer-events-none  hover:text-gray-100 hover:bg-blue-600"
-              >
-                Previous
-              </a>
+            <li
+              className={`page-item ${
+                currPg === 1
+                  ? "disabled relative block px-3 py-1 text-xs text-gray-700 transition-all duration-300 rounded-md"
+                  : "relative block px-3 py-1 text-xs text-white transition-all duration-300 rounded-md  hover:bg-blue-100 hover:text-black cursor-pointer bg-blue-600"
+              }`}
+              onClick={() => onPageChange("previous")}
+            >
+              Previous
             </li>
-            <li className="page-item ">
-              <a
-                href="#"
-                className="relative block px-3 py-1 mr-1 text-xs text-gray-100 transition-all duration-300 bg-blue-600 rounded-md hover:text-blue-700 hover:bg-blue-200 gray-400"
+            <li className="page-item">
+              <button
+                className={
+                  "relative block px-3 mx-1 py-1 mr-1 text-xs text-gray-100 transition-all duration-300 bg-blue-600 rounded-md hover:text-blue-700 hover:bg-blue-200 gray-400"
+                }
               >
-                1
-              </a>
+                {currPg}
+              </button>
             </li>
-            <li className="page-item ">
-              <a
-                href="#"
-                className="relative block px-3 py-1 mr-1 text-xs text-gray-700 transition-all duration-300 rounded-md  hover:bg-blue-100 "
-              >
-                2
-              </a>
-            </li>
-            <li className="page-item ">
-              <a
-                href="#"
-                className="relative block px-3 py-1 mr-1 text-xs text-gray-700 transition-all duration-300 rounded-md  hover:bg-blue-100 "
-              >
-                3
-              </a>
-            </li>
-            <li className="page-item ">
-              <a
-                href="#"
-                className="relative block px-3 py-1 text-xs text-gray-700 transition-all duration-300 rounded-md  hover:bg-blue-100 "
-              >
-                Next
-              </a>
+
+            <li
+              className={`page-item ${
+                currPg < pgLimit
+                  ? "relative block px-3 py-1 text-xs text-white transition-all duration-300 rounded-md  hover:bg-blue-100 hover:text-black bg-blue-600"
+                  : "disabled relative block px-3 py-1 text-xs text-gray-700 transition-all duration-300 rounded-md"
+              }`}
+              onClick={() => onPageChange("next")}
+            >
+              <button className="">Next </button>
             </li>
           </ul>
         </nav>

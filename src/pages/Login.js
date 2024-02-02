@@ -37,6 +37,12 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
+    if (user.email === "" || user.username === "" || user.password === "") {
+      alert("please fill all details"); // toaster
+
+      return;
+    }
+
     setLoading(true);
     const response = await loginService(user);
 
@@ -66,7 +72,7 @@ const Login = () => {
           "
         >
           <Input
-            type="text"
+            type="email"
             name="email"
             placeholder="email"
             value={user.email}

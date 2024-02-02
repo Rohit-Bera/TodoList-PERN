@@ -4,6 +4,7 @@ import {
   deleteTask,
   getTask,
   updateTask,
+  getHistory,
 } from "../../services/task.service";
 
 // alternative way to use redux toolkit
@@ -13,6 +14,8 @@ const taskSlice = createSlice({
     tasks: [],
     loading: false,
     error: null,
+    history: [],
+    total: 0,
   },
   reducers: {
     allTask: (state, action) => {
@@ -82,6 +85,23 @@ const taskSlice = createSlice({
     builder.addCase(deleteTask.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    });
+
+    // history
+    builder.addCase(getHistory.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getHistory.fulfilled, (state, action) => {
+      state.loading = false;
+      state.history = action.payload.records;
+      console.log("state.history: ", state.history);
+      state.total = action.payload.rowCount;
+      console.log("action.payload: ", action.payload);
+    });
+    builder.addCase(getHistory.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      console.log("action.payload: ", action.payload);
     });
   },
 });
